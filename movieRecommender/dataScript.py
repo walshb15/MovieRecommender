@@ -31,23 +31,24 @@ def create_table(conn, create_table_sql):
 #test = ['3932', 'Invisible Man, The (1933)', 'Horror|Sci-Fi\n']
 #testLine = "INSERT into ratings(movieId, title, genre) VALUES(" + test[0] + ",'" + test[1] +"'," + test[2]+" );"
 #print(testLine)
-database = "db.sqlite3"
+database = "C://Users//kirbypar//MovieRecommender//db.sqlite3"
 con = create_connection(database)
 cursor = con.cursor()
-cursor.execute("SELECT * FROM movies")
+cursor.execute("SELECT * FROM ratings")
 print(cursor.fetchall())
-#f = open("C:\\Users\\kirbypar\\Desktop\\CSE482\Ml-1m\\movies.dat")
+#f = open("C:\\Users\\kirbypar\\Desktop\\CSE482\Ml-1m\\ratings.dat")
 #for line in f:
 #    line = line.replace("\n", "")
 #    line = line.split("::")
-#    insert = "INSERT into movies(movieId, title, genre) VALUES((?), (?), (?))"
+#    insert = "INSERT into ratings(userid, movieid, rating) VALUES((?), (?), (?))"
 #    cursor.execute(insert, (line[0], line[1], line[2]))
 #con.commit()
-#sql_create_projects_table = """ CREATE TABLE movies (
-#                                    movieId integer,
-#                                    title text,
-#                                    genre text
+#sql_create_projects_table = """ CREATE TABLE ratings (
+#                                    userid integer,
+#                                    movieid integer,
+#                                    rating integer
 #                                ); """
 #conn = create_connection(database)
 #create_table(conn, sql_create_projects_table)
+#con.commit()
 
