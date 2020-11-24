@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from .models import Post
+from .models import Movie
+from .models import Rating
 
 def home(request):
     context = {
