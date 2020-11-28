@@ -34,21 +34,21 @@ def create_table(conn, create_table_sql):
 database = "C://Users//kirbypar//MovieRecommender//db.sqlite3"
 con = create_connection(database)
 cursor = con.cursor()
-insert = "INSERT into users( username, password) VALUES((?), (?))"
-cursor.execute(insert, ("dog", "cat"))
-cursor.execute("SELECT * FROM users")
+#insert = ""
+cursor.execute("SELECT * FROM ratings")
 print(cursor.fetchall())
-#f = open("C:\\Users\\kirbypar\\Desktop\\CSE482\Ml-1m\\users.dat")
+#f = open("C:\\Users\\kirbypar\\Desktop\\CSE482\Ml-1m\\ratings.dat")
 #for line in f:
 #    line = line.replace("\n", "")
 #    line = line.split("::")
-#    insert = "INSERT into users(userid, username, password) VALUES((?), (?), (?))"
-#    cursor.execute(insert, (line[0], None, None))
-#con.commit()
-#sql_create_projects_table = """ CREATE TABLE users (
-#                                    userid integer PRIMARY KEY,
-#                                    username text,
-#                                    password text
+#    insert = "INSERT into ratings(userid, movieid, rating) VALUES((?), (?), (?))"
+#    cursor.execute(insert, (line[0], line[1], line[2]))
+con.commit()
+#sql_create_projects_table = """ CREATE TABLE ratings (
+#                                    userid integer,
+#                                    movieid integer,
+#                                    rating integer,
+#                                    ratingid integer PRIMARY KEY
 #                                ); """
 #conn = create_connection(database)
 #create_table(conn, sql_create_projects_table)
