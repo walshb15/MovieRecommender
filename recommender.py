@@ -74,6 +74,35 @@ for i in user_ids:
     user_sim = pairwise.rbf_kernel([curTracker['rating']], [otherTracker['rating']], gamma=0.2)[0][0]
     similar_users = similar_users.append({'userId': i, 'simScore': user_sim}, ignore_index=True)
 print("TOP 5 Most Similar Users to UserId", curUserId)
-print(similar_users.sort_values(by='simScore', ascending=False).head())
+similar_users = similar_users.sort_values(by='simScore', ascending=False).head()
+print(similar_users)
+print('\n')
+
+#The amount of movies to return
+movieCap = 6
+#The min rating a movie needs to be in order to be recommended
+ratingThreshold = 3
+#List to hold the ids of recommended movies
+uMovieRecommendations = []
+#Loop through the user ids of similar users
+for i in similar_users['userId']:
+    simUser = grouped_users.get_group(i)
+    #Go through the ratings from the similar user
+    for j in simUser.values:
+        #Find a movie that the current user has not watched yet
+        existsCheck = curUser.loc[curUser['movieId'] == j[1]]
+        if len(existsCheck.values) == 0:
+            #If the movie that was found is above the rating threshold
+            if j[2] >= ratingThreshold:
+                #Recommend it
+                uMovieRecommendations.append(j[1])
+        #Stop looping when enough movies are found
+        if len(uMovieRecommendations) >= movieCap:
+            break
+    if len(uMovieRecommendations) >= movieCap:
+        break
+
+print("Top {} movies (ids) based on what similar users like:".format(movieCap))
+print(uMovieRecommendations)
     
 
