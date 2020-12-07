@@ -16,12 +16,13 @@ class Movie(models.Model):
 
 
 class Rating(models.Model):
-    userid = models.IntegerField(blank=True, null=False, primary_key=True)
+    ratingid = models.IntegerField(blank=True, null=False, primary_key=True)
+    userid = models.IntegerField(blank=True, null=False)
     movieid = models.IntegerField(blank=True, null=True)
     rating = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return '{} {} {}'.format(self.userid, self.movieid, self.rating)
+        return 'Rating ID: {}'.format(self.ratingid)
 
     class Meta:
         managed = False

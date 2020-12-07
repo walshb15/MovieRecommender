@@ -131,22 +131,17 @@ body {font-size:16px;}
 
      <!-- First 2 movies  -->
     <div class="w3-row-padding">
+      {% for movie in ratedMovies %}
         <div class="w3-half w3-margin-bottom">
           <ul class="w3-ul w3-light-grey w3-center">
-            <li class="w3-red w3-xlarge w3-padding-32">Movie 1</li>
-            <li class="w3-padding-16">5 stars</li>
+            <li class="w3-red w3-xlarge w3-padding-32">{{movie.title}}</li>
+            <li class="w3-padding-16">{{movie.rating}} stars</li>
           </ul>
         </div>
-            
-        <div class="w3-half">
-          <ul class="w3-ul w3-light-grey w3-center">
-            <li class="w3-red w3-xlarge w3-padding-32">Movie 2</li>
-            <li class="w3-padding-16">3 stars</li>
-          </ul>
-        </div>
+      {% endfor %}
     </div>
 
-    <!-- Next 2 movies  -->
+    <!-- Next 2 movies  >
     <div class="w3-row-padding">
         <div class="w3-half w3-margin-bottom">
           <ul class="w3-ul w3-light-grey w3-center">
@@ -161,7 +156,7 @@ body {font-size:16px;}
             <li class="w3-padding-16">3 stars</li>
           </ul>
         </div>
-    </div>
+    </div>-->
 
 
   </div>
@@ -177,68 +172,16 @@ body {font-size:16px;}
 
   <!-- Users that share the same preferences -->
   <div class="w3-row-padding w3-grayscale">
-
-    <div class="w3-col m4 w3-margin-bottom">
-      <div class="w3-light-grey">
-        <div class="w3-container">
-          <h3>User 1</h3>
-          <p class="w3-opacity">username</p>
-          <p>Extra information to display if needed </p>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="w3-col m4 w3-margin-bottom">
-      <div class="w3-light-grey">
-        <div class="w3-container">
-          <h3>User 2</h3>
-          <p class="w3-opacity">username</p>
-          <p>Extra information to display if needed </p>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="w3-col m4 w3-margin-bottom">
-      <div class="w3-light-grey">
-        <div class="w3-container">
-          <h3>User 3</h3>
-          <p class="w3-opacity">username</p>
-          <p>Extra information to display if needed </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="w3-col m4 w3-margin-bottom">
-        <div class="w3-light-grey">
-          <div class="w3-container">
-            <h3>User 4</h3>
-            <p class="w3-opacity">username</p>
-            <p>Extra information to display if needed </p>
-          </div>
-        </div>
-      </div>
-
+    {% for user in simUsers %}
       <div class="w3-col m4 w3-margin-bottom">
         <div class="w3-light-grey">
           <div class="w3-container">
-            <h3>User 5</h3>
-            <p class="w3-opacity">username</p>
-            <p>Extra information to display if needed </p>
+            <h3>User ID: {{user.1}}</h3>
+            <p>Similarity score (out of 1): {{user.0}} </p>
           </div>
         </div>
       </div>
-
-      <div class="w3-col m4 w3-margin-bottom">
-        <div class="w3-light-grey">
-          <div class="w3-container">
-            <h3>User 6</h3>
-            <p class="w3-opacity">username</p>
-            <p>Extra information to display if needed </p>
-          </div>
-        </div>
-      </div>
+    {% endfor %}
   </div>
 
 

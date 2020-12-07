@@ -43,13 +43,13 @@ print('USER SIMILARITY SCORE:')
 print(user_sim)'''
 
 #This will probably get passed in, but it's the user currently logged in
-curUserId = 3
+curUserId = 1
 #Get a dataframe of the current user's info
 curUser = grouped_users.get_group(curUserId).drop(['userId'], axis=1)
 #Dataframe to hold the users which are most similar to the current one
 similar_users = p.DataFrame()
 #Go through every user id
-for i in user_ids:
+for i in user_ids.head():
     #Skip if you come across the current user
     if i == curUserId:
         continue
@@ -74,7 +74,7 @@ for i in user_ids:
     user_sim = pairwise.rbf_kernel([curTracker['rating']], [otherTracker['rating']], gamma=0.2)[0][0]
     similar_users = similar_users.append({'userId': i, 'simScore': user_sim}, ignore_index=True)
 print("TOP 5 Most Similar Users to UserId", curUserId)
-similar_users = similar_users.sort_values(by='simScore', ascending=False).head()
+similar_users = similar_users.sort_values(by='simScore', ascending=False)
 print(similar_users)
 print('\n')
 
@@ -83,9 +83,9 @@ movieCap = 6
 #The min rating a movie needs to be in order to be recommended
 ratingThreshold = 3
 #List to hold the ids of recommended movies
-uMovieRecommendations = []
+uMovieRecommendations = set()
 #Loop through the user ids of similar users
-for i in similar_users['userId']:
+for i in similar_users['userId'].head():
     simUser = grouped_users.get_group(i)
     #Go through the ratings from the similar user
     for j in simUser.values:
@@ -95,7 +95,8 @@ for i in similar_users['userId']:
             #If the movie that was found is above the rating threshold
             if j[2] >= ratingThreshold:
                 #Recommend it
-                uMovieRecommendations.append(j[1])
+                #uMovieRecommendations.append(j[1])
+                uMovieRecommendations.add(j[1])
         #Stop looping when enough movies are found
         if len(uMovieRecommendations) >= movieCap:
             break
