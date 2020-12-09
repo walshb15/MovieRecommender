@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse, redirect
+from django.contrib import messages
 import pandas as p
 from .models import Movie
 from .models import Rating
@@ -40,3 +41,16 @@ def home(request):
 
 def about(request):
     return render(request, 'movieRecommender/about.html', {'title': 'About'})
+    
+def account(request):
+    if request.method == 'POST':
+        movie = request.POST.get('Movie_Name', None)
+        rating = request.POST.get('Rating',None)
+        #Movie name and Rating have been obtained, now just get the user ID, and Movie ID from databases and import the rating.
+        print(movie)
+        print(rating)
+        
+        messages.success(request, f'Your review has been submitted')
+        return redirect('movieRecommender-home')
+    else:
+        return render(request, 'movieRecommender/account.html', {'title': 'Account'})

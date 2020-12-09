@@ -1,0 +1,10 @@
+{% extends "movieRecommender/base.html" %}
+{% block content %}
+    <h1>Insert a movie name and a numeric rating from 1-5 in the boxes below</h1>
+<form method="POST" action="/account/">
+{% csrf_token %}
+<input type="text" name="Movie_Name">
+<input type="text" name="Rating">
+<button type="submit">Upload text</button>
+</form>
+{% endblock content %}
