@@ -1,4 +1,5 @@
 import pandas as p
+import operator
 from sklearn.metrics import pairwise
 from .models import Movie
 from .models import Rating
@@ -103,3 +104,89 @@ def userBasedRecommendations(curUser, grouped_users, similar_users, movieCap, ra
     #print("Top {} movies (ids) based on what similar users like:".format(movieCap))
     #print(uMovieRecommendations)
     return uMovieRecommendations
+
+
+'''
+@descrip: Gets list of new movies based on user's most watched genres
+
+@param userId: The user receiving recommendations
+@param movieData: Data from teh Movies table
+@param ratingData: Data from the Ratings table
+@param movieCap: The max movies to get
+@return: A dictionary of form {Genre : [movieIds]}
+'''
+def newMoviesByGenre(userId, movieData, ratingData, movieCap):
+    genreCounts = dict()
+    total = 0
+
+    userMovies = ratingData.loc[ratingData['userid'] == userId]['movieid'].to_list()
+
+    # Get the number of movies the user has seen for each genre
+    for movie in movieGetter(userMovies):
+        for genre in movie['genre'].split('|'): 
+            if genreCounts.get(genre, False):
+                genreCounts[genre] += 1
+            else:
+                genreCounts[genre] = 1
+            total += 1
+
+    # Adjust counts to be a proportion of the movie cap
+    for k in genreCounts.keys():
+        genreCounts[k] = round((genreCounts[k]/total) * movieCap)
+
+    movies = set()
+    # Get movies the user hasnt seen for each genre
+    for genre in genreCounts:
+        movieid = movieData[movieData['genre'].str.contains(genre)]['movieid'].to_list()
+        step = 0
+        while genreCounts[genre] > 0:
+            try:
+                if movieid[step] not in movies and movieid[step] not in userMovies:
+                    genreCounts[genre] -= 1
+                    movies.add(movieid[step])
+                step += 1
+            except: 
+                break
+
+
+    return movies 
+
+    
+'''
+@descrip: Gets movies recommendations for user based on top genres
+
+@param userId: The ID of the user being recommeded to
+@param movieData: Data from teh Movies table
+@param ratingData: Data from the Ratings tableparam movieData
+@param movieCap: The max number of movies to get
+
+@return: Set of movies IDs with highest recommendations
+'''
+def topMoviesByGenre(userId, movieData, ratingData, movieCap):
+    movies = newMoviesByGenre(userId, movieData, ratingData, movieCap * 100)
+    userRatings = list(zip(ratingData.loc[ratingData['userid'] == userId]['movieid'].to_list(), ratingData.loc[ratingData['userid'] == userId]['rating'].to_list()))
+
+    genreAvgs = dict()  # {Genre : (avgRating, totalRatings)}
+
+    # Get ratings by genre
+    for rating in userRatings:
+        for genre in str(movieData.loc[movieData['movieid'] == rating[0]]['genre']).split()[1].split('|'):
+            if genreAvgs.get(genre, False):
+                genreAvgs[genre] = (genreAvgs[genre][0] + rating[1], genreAvgs[genre][1] + 1)
+            else:
+                genreAvgs[genre] = (rating[1], 1)
+
+    recommendedRatings = list() # [MovieId, RecommendationRating]
+
+    # Recommend movies based on weighted average rating by genre
+    for movieId in movies:
+        rating = 0
+        for genre in str(movieData.loc[movieData['movieid'] == movieId]['genre']).split()[1].split('|'):
+            if genreAvgs.get(genre, False):
+                rating += genreAvgs[genre][0] / genreAvgs[genre][1]
+        recommendedRatings.append((movieId, rating))
+
+    recommendedRatings.sort(key = operator.itemgetter(1), reverse=True)
+    return set(list(zip(*recommendedRatings[:movieCap]))[0])
+
+     

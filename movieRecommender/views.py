@@ -3,7 +3,7 @@ from django.contrib import messages
 import pandas as p
 from .models import Movie
 from .models import Rating
-from .recommendDriver import movieGetter, getSimilarUsers, userBasedRecommendations, queryToList
+from .recommendDriver import movieGetter, getSimilarUsers, userBasedRecommendations, queryToList, topMoviesByGenre
 
 def home(request):
     curUserId = 1
@@ -27,11 +27,18 @@ def home(request):
     print("Similar Users:")
     print(similar_users)
     ubRecommendIds = userBasedRecommendations(curUser, grouped_users, similar_users, movieCap, ratingThreshold)
-    print("Recommended Movies:")
+    print("Recommended Movies (User Sim):")
     print(ubRecommendIds)
     #ubTitles = movieGetter([110.0, 223.0, 260.0, 329.0, 733.0, 919.0])
     ubTitles = movieGetter(ubRecommendIds)
     userRatingsData = movieGetter(userRatingsIds, curUserId)
+
+    # NOLAN TESTING
+    genreBasedIds = topMoviesByGenre(curUserId, mov_data, rating_data, movieCap)
+    print("Recommended Movies (Genre):")
+    print(genreBasedIds)
+
+
     context = {
         'uMovies':  ubTitles,
         'simUsers': similar_users.head(userCap).values,
