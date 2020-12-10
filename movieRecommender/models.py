@@ -27,3 +27,14 @@ class Rating(models.Model):
     class Meta:
         managed = False
         db_table = 'ratings'
+
+class users(models.Model):
+    userID = models.IntegerField(db_column='userID', blank=True, null=True)
+    username = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return 'User ID: {}'.format(self.userID)
+
+    class Meta:
+        managed = False
+        db_table = 'ratings'
