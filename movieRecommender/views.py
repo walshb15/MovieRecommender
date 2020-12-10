@@ -4,6 +4,24 @@ import pandas as p
 from .models import Movie
 from .models import Rating
 from .recommendDriver import movieGetter, getSimilarUsers, userBasedRecommendations, queryToList
+import sqlite3
+from sqlite3 import Error
+
+
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        return conn
+    except Error as e:
+        print(e)
+
+    return conn
 
 def home(request):
     curUserId = 1
@@ -49,8 +67,33 @@ def account(request):
         #Movie name and Rating have been obtained, now just get the user ID, and Movie ID from databases and import the rating.
         print(movie)
         print(rating)
-        
-        messages.success(request, f'Your review has been submitted')
-        return redirect('movieRecommender-home')
+        if(request.user.is_authenticated):
+            name = str(request.user.username)
+            #insert the rating to the database
+            database = "C://Users//wolfe//Desktop//MovieRecommender//db.sqlite3"
+            con = create_connection(database)
+            cursor = con.cursor()
+            
+            getUserID = "SELECT userid FROM users WHERE username = ((?))"
+            userIDLine = cursor.execute(getUserID, (name,))
+            if userIDLine != None:
+                userID = cursor.fetchone()[0]
+                print(userID)
+                getMovieID = "SELECT movieid FROM Movies WHERE title = ((?))"
+                movieIDLine = cursor.execute(getMovieID, (movie,))
+                if(movieIDLine != None):
+                    movieID = cursor.fetchone()[0]
+                    print(movieID)
+                    insert = "INSERT into ratings(userid, movieid, rating) VALUES((?), (?), (?))"
+                    cursor.execute(insert, (userID, movieID, int(rating), ))
+                    con.commit()       
+                    messages.success(request, f'Your review has been submitted')
+                    return redirect('movieRecommender-home')
+                else:
+                    return redirect('account')
+            else:
+                return redirect('login')
+        else:
+            return redirect('register')
     else:
         return render(request, 'movieRecommender/account.html', {'title': 'Account'})
