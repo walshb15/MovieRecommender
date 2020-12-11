@@ -83,13 +83,15 @@ def account(request):
             
             getUserID = "SELECT userid FROM users WHERE username = ((?))"
             userIDLine = cursor.execute(getUserID, (name,))
-            if userIDLine != None:
-                userID = cursor.fetchone()[0]
+            userIDLine = cursor.fetchone()
+            if userIDLine is not None:
+                userID = userIDLine[0]
                 print(userID)
                 getMovieID = "SELECT movieid FROM Movies WHERE title = ((?))"
                 movieIDLine = cursor.execute(getMovieID, (movie,))
-                if(movieIDLine != None):
-                    movieID = cursor.fetchone()[0]
+                movieIDLine = cursor.fetchone()
+                if(movieIDLine is not None):
+                    movieID = movieIDLine[0]
                     print(movieID)
                     insert = "INSERT into ratings(userid, movieid, rating) VALUES((?), (?), (?))"
                     cursor.execute(insert, (userID, movieID, int(rating), ))
@@ -97,10 +99,13 @@ def account(request):
                     messages.success(request, f'Your review has been submitted')
                     return redirect('movieRecommender-home')
                 else:
+                    messages.error(request, f'Your movie title was not found, please check the spelling and try again. Must match the database formatting as well.')
                     return redirect('account')
             else:
+                messages.error(request, f'Please login to submit an account')
                 return redirect('login')
         else:
-            return redirect('register')
+            messages.error(request, f'Please login to submit an account')
+            return redirect('login')
     else:
         return render(request, 'movieRecommender/account.html', {'title': 'Account'})
