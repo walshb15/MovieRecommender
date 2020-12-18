@@ -57,9 +57,9 @@ body {font-size:16px;}
     <p>We found movies that you are most likely to watch based on your previous ratings:</p>
   </div>
   
-  <!-- Recommendations based on User -->
+  <!-- Recommendations based on current user's previous ratings -->
   <div class="w3-row-padding w3-grayscale">
-    {% for movie in uMovies %}
+    {% for movie in gMovies %}
       <div class="w3-col m4 w3-margin-bottom">
         <div class="w3-light-grey">
           <div class="w3-container">

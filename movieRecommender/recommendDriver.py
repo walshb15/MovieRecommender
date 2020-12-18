@@ -38,7 +38,7 @@ def getSimilarUsers(curUserId, curUser, grouped_users, mov_data, rating_data):
     #Get all of the user ids
     user_ids = rating_data['userid'].drop_duplicates()
     #Get the average rating for each user
-    avg_userRatings = rating_data['rating'].groupby(rating_data['userid']).mean()
+    #avg_userRatings = rating_data['rating'].groupby(rating_data['userid']).mean()
     #Dataframe to hold the users which are most similar to the current one
     similar_users = p.DataFrame()
     '''

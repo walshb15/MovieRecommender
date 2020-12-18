@@ -3,7 +3,7 @@ from django.contrib import messages
 import pandas as p
 from .models import Movie
 from .models import Rating
-from .recommendDriver import movieGetter, getSimilarUsers, userBasedRecommendations, queryToList
+from .recommendDriver import movieGetter, getSimilarUsers, userBasedRecommendations, queryToList, topMoviesByGenre
 import sqlite3
 from sqlite3 import Error
 
@@ -55,10 +55,11 @@ def home(request):
     genreBasedIds = topMoviesByGenre(curUserId, mov_data, rating_data, movieCap)
     print("Recommended Movies (Genre):")
     print(genreBasedIds)
-
+    gTitles = movieGetter(genreBasedIds)
 
     context = {
         'uMovies':  ubTitles,
+        'gMovies': gTitles,
         'simUsers': similar_users.head(userCap).values,
         'ratedMovies': userRatingsData
     }
