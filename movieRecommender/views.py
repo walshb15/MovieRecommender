@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib import messages
+from django.contrib.auth.models import User
 import pandas as p
 from .models import Movie
 from .models import Rating
@@ -24,13 +25,24 @@ from .recommendDriver import movieGetter, getSimilarUsers, userBasedRecommendati
 
 def home(request):
     curUserId = 1
+    #If user is logged in
     if (request.user.is_authenticated):
-        name = str(request.user.username)
+        '''name = str(request.user.username)
         print(name)
-        userObj = users.objects.get(username=name)
-        print(userObj)
+        if (users.objects.filter(username=name).count() > 0):
+            userObj = users.objects.get(username=name)
+            curUserId = userObj.userID
+        elif (User.objects.filter(username=name).count() > 0):
+            curUserId = request.user.id
+        try:
+            userObj = users.objects.get(username=name)
+        except NameError:
+            userObj = User.objects.get(username=name)
+        print(userObj)'''
+        #Get their id
+        curUserId = request.user.id
         #curUserId = userObj.userID
-        print(curUserId)
+    #If the user is not logged in, redirect to the login page
     else:
         return redirect('login')
     #The max number of movies to return
