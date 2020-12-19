@@ -29,7 +29,8 @@ def home(request):
         print(name)
         userObj = users.objects.get(username=name)
         print(userObj)
-        #curUserId = userObj.userid
+        #curUserId = userObj.userID
+        print(curUserId)
     else:
         return redirect('login')
     #The max number of movies to return
