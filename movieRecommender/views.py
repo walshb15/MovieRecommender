@@ -104,13 +104,13 @@ def account(request):
             cursor = con.cursor()'''
             
             #getUserID = "SELECT userid FROM users WHERE username = ((?))"
-            getUserID = users.objects.get(name)
+            getUserID = request.user.id
             #userIDLine = cursor.execute(getUserID, (name,))
             #userIDLine = cursor.fetchone()
             userIDLine = getUserID
             if userIDLine is not None:
                 #userID = userIDLine[0]
-                userID = getUserID.userID
+                userID = getUserID
                 print(userID)
                 '''getMovieID = "SELECT movieid FROM Movies WHERE title = ((?))"
                 movieIDLine = cursor.execute(getMovieID, (movie,))
