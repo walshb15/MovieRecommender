@@ -29,7 +29,7 @@ class Rating(models.Model):
         db_table = 'ratings'
 
 class users(models.Model):
-    userID = models.IntegerField(db_column='userID', blank=True, null=True)
+    userID = models.IntegerField(db_column='userID', blank=True, null=False, primary_key=True)
     username = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -37,4 +37,4 @@ class users(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ratings'
+        db_table = 'users'

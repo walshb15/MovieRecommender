@@ -3,12 +3,11 @@ from django.contrib import messages
 import pandas as p
 from .models import Movie
 from .models import Rating
+from .models import users
 from .recommendDriver import movieGetter, getSimilarUsers, userBasedRecommendations, queryToList, topMoviesByGenre
-import sqlite3
-from sqlite3 import Error
 
 
-def create_connection(db_file):
+'''def create_connection(db_file):
     """ create a database connection to the SQLite database
         specified by db_file
     :param db_file: database file
@@ -21,10 +20,18 @@ def create_connection(db_file):
     except Error as e:
         print(e)
 
-    return conn
+    return conn'''
 
 def home(request):
     curUserId = 1
+    if (request.user.is_authenticated):
+        name = str(request.user.username)
+        print(name)
+        userObj = users.objects.get(username=name)
+        print(userObj)
+        #curUserId = userObj.userid
+    else:
+        return redirect('login')
     #The max number of movies to return
     movieCap = 6
     #The min rating needed to recommend a movie
@@ -78,25 +85,34 @@ def account(request):
         if(request.user.is_authenticated):
             name = str(request.user.username)
             #insert the rating to the database
-            database = "C://Users//wolfe//Desktop//MovieRecommender//db.sqlite3"
+            #What is this? Why did you use an absolute path???
+            '''database = "C://Users//wolfe//Desktop//MovieRecommender//db.sqlite3"
             con = create_connection(database)
-            cursor = con.cursor()
+            cursor = con.cursor()'''
             
-            getUserID = "SELECT userid FROM users WHERE username = ((?))"
-            userIDLine = cursor.execute(getUserID, (name,))
-            userIDLine = cursor.fetchone()
+            #getUserID = "SELECT userid FROM users WHERE username = ((?))"
+            getUserID = users.objects.get(name)
+            #userIDLine = cursor.execute(getUserID, (name,))
+            #userIDLine = cursor.fetchone()
+            userIDLine = getUserID
             if userIDLine is not None:
-                userID = userIDLine[0]
+                #userID = userIDLine[0]
+                userID = getUserID.userID
                 print(userID)
-                getMovieID = "SELECT movieid FROM Movies WHERE title = ((?))"
+                '''getMovieID = "SELECT movieid FROM Movies WHERE title = ((?))"
                 movieIDLine = cursor.execute(getMovieID, (movie,))
-                movieIDLine = cursor.fetchone()
+                movieIDLine = cursor.fetchone()'''
+                getMovieID = Movie.objects.get(title=movie)
+                movieIDLine = getMovieID
                 if(movieIDLine is not None):
-                    movieID = movieIDLine[0]
+                    #movieID = movieIDLine[0]
+                    movieID = getMovieID.movieid
                     print(movieID)
-                    insert = "INSERT into ratings(userid, movieid, rating) VALUES((?), (?), (?))"
+                    '''insert = "INSERT into ratings(userid, movieid, rating) VALUES((?), (?), (?))"
                     cursor.execute(insert, (userID, movieID, int(rating), ))
-                    con.commit()       
+                    con.commit()   '''
+                    insert = Rating(userid=userID, movieid=movieID, rating=int(rating))
+                    insert.save()
                     messages.success(request, f'Your review has been submitted')
                     return redirect('movieRecommender-home')
                 else:
